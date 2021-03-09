@@ -20,10 +20,10 @@ const connect = () =>
  * @param {RabbitMQ Queue} queue
  * @returns {Channel Queue}
  */
-const createQueue = (channel, queue) =>
+const createQueue = (channel) =>
   new Promise((resolve, reject) => {
     try {
-      channel.assertQueue(queue, { durable: true })
+      channel.assertQueue(connectionQueue, { durable: true })
       resolve(channel)
     } catch (err) {
       reject(err)
@@ -35,10 +35,12 @@ const createQueue = (channel, queue) =>
  * @param {Channel Queue} queue
  * @param {String} message
  */
-const sendToQueue = (queue, message) =>
+const sendToQueue = (message) =>
   connect()
-    .then((channel) => createQueue(channel, queue))
-    .then((channel) => channel.sendToQueue(queue, Buffer.from(message)))
+    .then((channel) => createQueue(channel, connectionQueue))
+    .then((channel) =>
+      channel.sendToQueue(connectionQueue, Buffer.from(message))
+    )
     .catch(console.log)
 
 /**
@@ -46,21 +48,23 @@ const sendToQueue = (queue, message) =>
  * @param {Channel Queue} queue
  * @param {Callback} callback
  */
-const consume = (queue, callback) =>
+const consume = (callback) =>
   connect()
-    .then((channel) => createQueue(channel, queue))
-    .then((channel) => channel.consume(queue, callback, { noAck: true }))
+    .then((channel) => createQueue(channel, connectionQueue))
+    .then((channel) =>
+      channel.consume(connectionQueue, callback, { noAck: true })
+    )
     .catch(console.log)
 
 /**
  *  consume the socketIO instance and send message from queue
- * @param {SocketIO} ioInstance
+ * @param {SocketIO} Socket
  */
-const startConsumer = (ioInstance) => {
+const startConsumer = (socket) => {
   consume(connectionQueue, (message) => {
     const parsedMessage = JSON.parse(message.content.toString())
-    ioInstance.to(parsedMessage.roomId).emit('message', parsedMessage)
+    socket.to(parsedMessage.roomId).emit('message', parsedMessage)
   })
 }
 
-export { startConsumer }
+export { sendToQueue, startConsumer, consume }
