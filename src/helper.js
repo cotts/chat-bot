@@ -24,7 +24,7 @@ const getCsvInfo = (code) => {
  */
 const convertCsvToJson = (content) =>
   csv({ noheader: false })
-    .fromString(data.data)
+    .fromString(content)
     .then((rows) => rows[0])
 
 /**
@@ -32,10 +32,10 @@ const convertCsvToJson = (content) =>
  * @param {String} message
  * @returns {String}
  */
-const getCode = (message) => {
+const getCode = async (message) => {
   const code = message.split('/stock=')
-  if (code.length > 1) return code[1].toLowercase()
-  throw new Error('Stock Code cannot be blank')
+  console.log(code)
+  if (code.length > 1) return code[1].toLowerCase()
 }
 
 /**
@@ -44,11 +44,13 @@ const getCode = (message) => {
  * @param {String} room
  * @returns {String} string from message
  */
-const parserMessage = (data, room) => {
-  const message =
-    data.Symbol === 'N/D' && data.Open === 'N/D'
-      ? 'Invalid Stock Code'
-      : `${data.Symbol} quote is $${data.Open} per share`
+const parserMessage = async (data, room) => {
+  console.log(data)
+  const message = !data
+    ? 'Stock Code cannot be blank'
+    : data.Time === 'N/D' && data.Open === 'N/D'
+    ? 'Invalid Stock Code'
+    : `${data.Symbol} quote is $${data.Open} per share`
 
   const sendObject = {
     message,
