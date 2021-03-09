@@ -54,6 +54,7 @@ const parserMessage = async (data, room) => {
     message,
     name: 'Bot',
     roomId: room,
+    bot: true,
     _id: new Date().getTime(),
     createdAt: new Date(),
   }
