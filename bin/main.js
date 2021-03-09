@@ -8,10 +8,13 @@ dotenv.config()
 const socketServer = process.env.SOCKET_SERVER
 const serverQueue = process.env.RABBIT_MQ_QUEUE
 const socket = io(socketServer)
+const botName = '/stock='
 
 socket.on('connect', () => {
   console.log('bot connected')
-  socket.emit('request', 'botRoom')
+  socket.emit('requestRoom', botName, (callback) => {
+    console.log(`bot connected to room ${callback}`)
+  })
 
   bot.consume((message) => {
     const parsedMessage = JSON.parse(message.content.toString())
@@ -19,7 +22,7 @@ socket.on('connect', () => {
   })
 })
 
-socket.on('runbot', (message) => {
+socket.on('run', (message) => {
   helper(message).then((data) => {
     bot.sendToQueue(data)
   })
