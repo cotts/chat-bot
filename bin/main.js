@@ -27,5 +27,10 @@ socket.on('run', (message) => {
     bot.sendToQueue(data)
   })
 })
+setInterval(() => {
+  socket.emit('ping', (callback) => {
+    console.log(callback)
+  })
+}, 10000)
 
 socket.on('disconnect', () => console.log('bot disconnected'))
