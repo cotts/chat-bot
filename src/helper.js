@@ -34,7 +34,6 @@ const convertCsvToJson = (content) =>
  */
 const getCode = async (message) => {
   const code = message.split('/stock=')
-  console.log(code)
   if (code.length > 1) return code[1].toLowerCase()
 }
 
@@ -45,7 +44,6 @@ const getCode = async (message) => {
  * @returns {String} string from message
  */
 const parserMessage = async (data, room) => {
-  console.log(data)
   const message = !data
     ? 'Stock Code cannot be blank'
     : data.Time === 'N/D' && data.Open === 'N/D'
@@ -62,3 +60,13 @@ const parserMessage = async (data, room) => {
 
   return JSON.stringify(sendObject)
 }
+
+const prepareMessage = (messageContent) => {
+  const { message, roomId } = messageContent
+  return getCode(message)
+    .then(getCsvInfo)
+    .then(convertCsvToJson)
+    .then((data) => parserMessage(data, roomId))
+}
+
+export default prepareMessage
