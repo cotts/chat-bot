@@ -38,3 +38,25 @@ const getCode = (message) => {
   throw new Error('Stock Code cannot be blank')
 }
 
+/**
+ * Parser message to send to Queue
+ * @param {Object} data
+ * @param {String} room
+ * @returns {String} string from message
+ */
+const parserMessage = (data, room) => {
+  const message =
+    data.Symbol === 'N/D' && data.Open === 'N/D'
+      ? 'Invalid Stock Code'
+      : `${data.Symbol} quote is $${data.Open} per share`
+
+  const sendObject = {
+    message,
+    name: 'Bot',
+    roomId: room,
+    _id: new Date().getTime(),
+    createdAt: new Date(),
+  }
+
+  return JSON.stringify(sendObject)
+}
