@@ -7,10 +7,11 @@ import csv from 'csvtojson'
  * @returns {resolve Promise(Object), reject Promise(String)}
  */
 const getCsvInfo = (code) => {
-  return axios
-    .get(
-      `https://cors-anywhere.herokuapp.com/https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`
-    )
+  return axios({
+    method: 'GET',
+    urhl: `https://chat-cors.herokuapp.com/https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`,
+    headers: '',
+  })
     .then((data) => data.data)
     .catch((error) => {
       console.log(error)
