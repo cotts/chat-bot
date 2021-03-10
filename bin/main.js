@@ -18,7 +18,7 @@ socket.on('connect', () => {
 
   bot.consume((message) => {
     const parsedMessage = JSON.parse(message.content.toString())
-    socket.emit(parsedMessage.roomId, parsedMessage)
+    socket.emit('botEmit', parsedMessage.roomId, parsedMessage)
   })
 })
 
@@ -31,6 +31,6 @@ setInterval(() => {
   socket.emit('ping', (callback) => {
     console.log(callback)
   })
-}, 10000)
+}, 20000)
 
 socket.on('disconnect', () => console.log('bot disconnected'))
