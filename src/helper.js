@@ -52,13 +52,15 @@ const getCode = async (message) => {
  * @returns {String} string from message
  */
 const parserMessage = async (data, room) => {
-  const message = !data
-    ? 'Stock Code cannot be blank'
-    : data.error
-    ? data.error
-    : data.Time === 'N/D' && data.Open === 'N/D'
-    ? 'Invalid Stock Code'
-    : `${data.Symbol} quote is $${data.Open} per share`
+  console.log(data)
+  const message =
+    data.Open === undefined
+      ? 'Stock Code cannot be blank'
+      : data.error
+      ? data.error
+      : data.Open === 'N/D'
+      ? 'Invalid Stock Code'
+      : `${data.Symbol} quote is $${data.Open} per share`
 
   const sendObject = {
     message,
@@ -69,6 +71,7 @@ const parserMessage = async (data, room) => {
     createdAt: new Date(),
   }
 
+  console.log(sendObject)
   return JSON.stringify(sendObject)
 }
 
