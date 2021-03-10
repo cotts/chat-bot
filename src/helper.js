@@ -9,7 +9,7 @@ import csv from 'csvtojson'
 const getCsvInfo = (code) => {
   return axios({
     method: 'GET',
-    urhl: `https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`,
+    url: `https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`,
     headers: '',
   })
     .then((data) => data.data)
