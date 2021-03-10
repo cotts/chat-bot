@@ -16,6 +16,8 @@
 
 This Bot is a module that connect to `Chat Bot API` via websocket and store the results on a message broker and return the parsed message to a specific room via websocket.
 
+After connect to websocket server, the BOT request for a room based on its command and after that, manage the requests through this room
+
 <br/>
 <hr/>
 <br/>
