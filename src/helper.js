@@ -4,7 +4,7 @@ import csv from 'csvtojson'
 /**
  *  Get Stock CSV String given a code
  * @param {String} code - Stock Code
- * @returns {Promise}
+ * @returns {resolve Promise(Object), reject Promise(String)}
  */
 const getCsvInfo = (code) => {
   return axios
@@ -14,7 +14,7 @@ const getCsvInfo = (code) => {
     .then((data) => data.data)
     .catch((error) => {
       console.log(error)
-      return error.message
+      return { error: 'Error on Retrieve Stock Information' }
     })
 }
 
@@ -25,9 +25,11 @@ const getCsvInfo = (code) => {
  *
  */
 const convertCsvToJson = (content) =>
-  csv({ noheader: false })
-    .fromString(content)
-    .then((rows) => rows[0])
+  content.error
+    ? content
+    : csv({ noheader: false })
+        .fromString(content)
+        .then((rows) => rows[0])
 
 /**
  * Extract code from string
@@ -48,6 +50,8 @@ const getCode = async (message) => {
 const parserMessage = async (data, room) => {
   const message = !data
     ? 'Stock Code cannot be blank'
+    : data.error
+    ? data.error
     : data.Time === 'N/D' && data.Open === 'N/D'
     ? 'Invalid Stock Code'
     : `${data.Symbol} quote is $${data.Open} per share`
@@ -70,6 +74,7 @@ const prepareMessage = (messageContent) => {
     .then(getCsvInfo)
     .then(convertCsvToJson)
     .then((data) => parserMessage(data, roomId))
+    .catch((error) => parserMessage(error, roomId))
 }
 
 export default prepareMessage
