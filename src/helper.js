@@ -8,7 +8,9 @@ import csv from 'csvtojson'
  */
 const getCsvInfo = (code) => {
   return axios
-    .get(`https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`)
+    .get(
+      `https://cors-anywhere.herokuapp.com/https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`
+    )
     .then((data) => data.data)
     .catch((error) => {
       console.log(error)
