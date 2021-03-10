@@ -52,7 +52,6 @@ const getCode = async (message) => {
  * @returns {String} string from message
  */
 const parserMessage = async (data, room) => {
-  console.log(data)
   const message =
     data.Open === undefined
       ? 'Stock Code cannot be blank'
