@@ -9,10 +9,10 @@ import csv from 'csvtojson'
 const getCsvInfo = (code) => {
   return axios({
     method: 'GET',
-    urhl: `https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv,`,
+    url: `https://api.allorigins.win/get?url=https://stooq.com/q/l/?s=${code}&f=sd2t2ohlcv&h&e=csv`,
     headers: '',
   })
-    .then((data) => data.data)
+    .then((data) => data.data.contents)
     .catch((error) => {
       console.log(error)
       return { error: 'Error on Retrieve Stock Information' }
@@ -25,12 +25,15 @@ const getCsvInfo = (code) => {
  * @returns {Object}
  *
  */
-const convertCsvToJson = (content) =>
-  content.error
-    ? content
-    : csv({ noheader: false })
-        .fromString(content)
-        .then((rows) => rows[0])
+const convertCsvToJson = (content) => {
+  if (content.error) return content
+  const contentArray = content.split(',')
+  const contentObject = {
+    Symbol: contentArray[0],
+    Open: contentArray[3],
+  }
+  return contentObject
+}
 
 /**
  * Extract code from string
